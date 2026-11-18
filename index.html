@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generatore di Prompt per la Scuola - Formula R-C-O-V-O</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts Inter -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .tab-active { border-bottom: 3px solid #4f46e5; color: #4f46e5; font-weight: 600; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #0f172a; }
+    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #475569; }
+    .lang-btn-active { background-color: #4f46e5 !important; color: #ffffff !important; font-weight: 700; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    .subcat-btn-active { background-color: #312e81 !important; color: #ffffff !important; border-color: #4338ca !important; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-indigo-900 text-white shadow-lg sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div class="flex items-center space-x-3">
+        <div class="p-2.5 bg-indigo-700/80 rounded-xl shadow-inner border border-indigo-500/30">
+          <i class="fa-solid fa-wand-magic-sparkles text-2xl text-amber-300"></i>
+        </div>
+        <div>
+          <h1 id="txt-header-title" class="text-xl md:text-2xl font-bold tracking-tight">Generatore di Prompt per la Scuola</h1>
+          <p id="txt-header-subtitle" class="text-indigo-200 text-xs md:text-sm">Formula R-C-O-V-O • Casi Studio per Docenti</p>
+        </div>
+      </div>
+      
+      <!-- Language & Badge -->
+      <div class="flex items-center gap-3">
+        <div class="hidden lg:flex items-center space-x-2 bg-indigo-800/80 px-3.5 py-1.5 rounded-lg border border-indigo-700/50 text-xs text-indigo-100">
+          <i class="fa-solid fa-graduation-cap text-amber-400"></i>
+          <span id="txt-header-badge">Piattaforma per Docenti</span>
+        </div>
+
+        <!-- Language Switcher Widget -->
+        <div class="flex items-center bg-indigo-950/80 p-1 rounded-xl border border-indigo-700/60 shadow-inner">
+          <button id="btn-lang-it" onclick="setLanguage('it')" class="lang-btn-active px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 text-indigo-200 hover:text-white">
+            <span>🇮🇹</span> <span>IT</span>
+          </button>
+          <button id="btn-lang-en" onclick="setLanguage('en')" class="px-3 py-1 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 text-indigo-200 hover:text-white">
+            <span>🇬🇧</span> <span>EN</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="bg-white border-b border-slate-200 sticky top-[73px] z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-4 sm:space-x-8 overflow-x-auto">
+      <button onclick="switchTab('builder')" id="tab-builder" class="py-3.5 px-2 tab-active text-slate-600 hover:text-indigo-600 transition font-medium flex items-center gap-2 text-sm whitespace-nowrap">
+        <i class="fa-solid fa-sliders text-indigo-600"></i> <span id="txt-tab-builder">Creatore di Prompt</span>
+      </button>
+      <button onclick="switchTab('library')" id="tab-library" class="py-3.5 px-2 text-slate-500 hover:text-indigo-600 transition font-medium flex items-center gap-2 text-sm whitespace-nowrap">
+        <i class="fa-solid fa-book-bookmark text-indigo-500"></i> <span id="txt-tab-library">Libreria Esempi</span>
+      </button>
+      <button onclick="switchTab('saved')" id="tab-saved" class="py-3.5 px-2 text-slate-500 hover:text-indigo-600 transition font-medium flex items-center gap-2 text-sm whitespace-nowrap">
+        <i class="fa-solid fa-bookmark text-amber-500"></i> <span id="txt-tab-saved">Prompt Salvati</span>
+      </button>
+      <button onclick="switchTab('guide')" id="tab-guide" class="py-3.5 px-2 text-slate-500 hover:text-indigo-600 transition font-medium flex items-center gap-2 text-sm whitespace-nowrap">
+        <i class="fa-solid fa-circle-info text-sky-500"></i> <span id="txt-tab-guide">Come funziona il Metodo</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content Area -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+
+    <!-- TAB 1: PROMPT BUILDER -->
+    <div id="content-builder" class="space-y-8">
+      
+      <!-- Formula Banner -->
+      <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-4 flex flex-wrap items-center justify-between gap-3 text-sm">
+        <span class="font-semibold text-indigo-900 flex items-center gap-2">
+          <i class="fa-solid fa-key text-amber-500"></i> <span id="txt-formula-title">Formula R-C-O-V-O per Prompt Scolastici:</span>
+        </span>
+        <div class="flex flex-wrap items-center gap-1.5 font-mono text-xs font-semibold">
+          <span id="badge-r" class="px-2.5 py-1 bg-blue-600 text-white rounded shadow-sm">1. RUOLO</span>
+          <span class="text-slate-400">+</span>
+          <span id="badge-c" class="px-2.5 py-1 bg-emerald-600 text-white rounded shadow-sm">2. CONTESTO</span>
+          <span class="text-slate-400">+</span>
+          <span id="badge-o1" class="px-2.5 py-1 bg-amber-600 text-white rounded shadow-sm">3. OBIETTIVO</span>
+          <span class="text-slate-400">+</span>
+          <span id="badge-v" class="px-2.5 py-1 bg-rose-600 text-white rounded shadow-sm">4. VINCOLI</span>
+          <span class="text-slate-400">+</span>
+          <span id="badge-o2" class="px-2.5 py-1 bg-purple-600 text-white rounded shadow-sm">5. OUTPUT</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- Form Inputs (7 Cols) -->
+        <div class="lg:col-span-7 space-y-6">
+
+          <!-- Presets Quick Choice -->
+          <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm space-y-3">
+            <label id="lbl-quick-select" class="text-xs font-bold uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+              <i class="fa-solid fa-bolt text-amber-500"></i> Selezione Rapida Ordine di Scuola
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              <button onclick="applySubCatPreset('Infanzia')" class="role-btn p-2.5 text-xs border rounded-lg hover:border-indigo-500 hover:bg-indigo-50/50 transition text-center flex flex-col items-center justify-center gap-1.5 text-slate-700 bg-slate-50 font-medium">
+                <i class="fa-solid fa-shapes text-indigo-600 text-lg"></i>
+                <span>Infanzia</span>
+              </button>
+              <button onclick="applySubCatPreset('Primaria')" class="role-btn p-2.5 text-xs border rounded-lg hover:border-indigo-500 hover:bg-indigo-50/50 transition text-center flex flex-col items-center justify-center gap-1.5 text-slate-700 bg-slate-50 font-medium">
+                <i class="fa-solid fa-child text-blue-600 text-lg"></i>
+                <span>Primaria</span>
+              </button>
+              <button onclick="applySubCatPreset('Secondaria di primo grado')" class="role-btn p-2.5 text-xs border rounded-lg hover:border-indigo-500 hover:bg-indigo-50/50 transition text-center flex flex-col items-center justify-center gap-1.5 text-slate-700 bg-slate-50 font-medium">
+                <i class="fa-solid fa-book-open-reader text-emerald-600 text-lg"></i>
+                <span>Sec. I Grado</span>
+              </button>
+              <button onclick="applySubCatPreset('Secondaria di secondo grado')" class="role-btn p-2.5 text-xs border rounded-lg hover:border-indigo-500 hover:bg-indigo-50/50 transition text-center flex flex-col items-center justify-center gap-1.5 text-slate-700 bg-slate-50 font-medium">
+                <i class="fa-solid fa-graduation-cap text-amber-600 text-lg"></i>
+                <span>Sec. II Grado</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- 1. RUOLO -->
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2.5">
+            <label class="font-bold text-slate-800 flex items-center justify-between">
+              <span class="flex items-center gap-2 text-sm sm:text-base">
+                <span class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center font-mono justify-center">R</span>
+                <span id="lbl-r-title">RUOLO</span>
+              </span>
+              <span id="lbl-r-sub" class="text-xs font-normal text-slate-500">Chi deve essere l'IA?</span>
+            </label>
+            <textarea id="input-ruolo" oninput="updatePrompt()" rows="2" class="w-full p-3 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition" placeholder="Es: Sei un docente di scuola dell'infanzia esperto nelle 'Nuove Indicazioni' e nella progettazione dei campi di esperienza..."></textarea>
+          </div>
+
+          <!-- 2. CONTESTO -->
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2.5">
+            <label class="font-bold text-slate-800 flex items-center justify-between">
+              <span class="flex items-center gap-2 text-sm sm:text-base">
+                <span class="w-6 h-6 rounded-full bg-emerald-600 text-white text-xs flex items-center font-mono justify-center">C</span>
+                <span id="lbl-c-title">CONTESTO</span>
+              </span>
+              <span id="lbl-c-sub" class="text-xs font-normal text-slate-500">Qual è la situazione specifica?</span>
+            </label>
+            <textarea id="input-contesto" oninput="updatePrompt()" rows="3" class="w-full p-3 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition" placeholder="Es: Sezione eterogenea di 20 bambini di 3-5 anni, con presenza di 2 bambini con bisogni educativi speciali..."></textarea>
+          </div>
+
+          <!-- 3. OBIETTIVO -->
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2.5">
+            <label class="font-bold text-slate-800 flex items-center justify-between">
+              <span class="flex items-center gap-2 text-sm sm:text-base">
+                <span class="w-6 h-6 rounded-full bg-amber-600 text-white text-xs flex items-center font-mono justify-center">O</span>
+                <span id="lbl-o1-title">OBIETTIVO</span>
+              </span>
+              <span id="lbl-o1-sub" class="text-xs font-normal text-slate-500">Cosa deve fare esattamente l'IA?</span>
+            </label>
+            <textarea id="input-obiettivo" oninput="updatePrompt()" rows="3" class="w-full p-3 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-amber-500 focus:border-amber-500 outline-none transition" placeholder="Es: Progetta un percorso laboratoriale di 4 settimane focalizzato sul campo 'Il sé e l'altro' e l'educazione all'empatia..."></textarea>
+          </div>
+
+          <!-- 4. VINCOLI -->
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2.5">
+            <label class="font-bold text-slate-800 flex items-center justify-between">
+              <span class="flex items-center gap-2 text-sm sm:text-base">
+                <span class="w-6 h-6 rounded-full bg-rose-600 text-white text-xs flex items-center font-mono justify-center">V</span>
+                <span id="lbl-v-title">VINCOLI E LIMITI</span>
+              </span>
+              <span id="lbl-v-sub" class="text-xs font-normal text-slate-500">Come deve farlo? Cosa evitare?</span>
+            </label>
+            <textarea id="input-vincoli" oninput="updatePrompt()" rows="3" class="w-full p-3 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-rose-500 focus:border-rose-500 outline-none transition" placeholder="Es: Mantieni un approccio ludico ed esperienziale. Allinea le attività con le Nuove Indicazioni Nazionali. Includi momenti d'osservazione..."></textarea>
+          </div>
+
+          <!-- 5. OUTPUT -->
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm space-y-2.5">
+            <label class="font-bold text-slate-800 flex items-center justify-between">
+              <span class="flex items-center gap-2 text-sm sm:text-base">
+                <span class="w-6 h-6 rounded-full bg-purple-600 text-white text-xs flex items-center font-mono justify-center">O</span>
+                <span id="lbl-o2-title">OUTPUT FORMATO</span>
+              </span>
+              <span id="lbl-o2-sub" class="text-xs font-normal text-slate-500">In quale formato deve rispondere?</span>
+            </label>
+            <textarea id="input-output" oninput="updatePrompt()" rows="2" class="w-full p-3 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-purple-500 focus:border-purple-500 outline-none transition" placeholder="Es: Presenta la risposta suddivisa in: Traguardi per lo sviluppo delle competenze, Attività settimanali, Spazi e Materiali, Criteri di Osservazione."></textarea>
+          </div>
+
+          <div class="flex flex-wrap gap-3">
+            <button onclick="resetForm()" class="px-4 py-2 border border-slate-300 rounded-lg text-slate-600 text-sm hover:bg-slate-100 transition flex items-center gap-1.5 font-medium">
+              <i class="fa-solid fa-rotate-left"></i> <span id="btn-reset-text">Cancella Tutto</span>
+            </button>
+            <button onclick="saveCurrentPrompt()" class="px-4 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-lg text-sm transition flex items-center gap-1.5 font-semibold shadow-sm">
+              <i class="fa-solid fa-bookmark"></i> <span id="btn-save-text">Salva nei Miei Prompt</span>
+            </button>
+          </div>
+
+        </div>
+
+        <!-- Live Preview Output (5 Cols) -->
+        <div class="lg:col-span-5">
+          <div class="bg-slate-900 text-slate-100 p-5 rounded-xl shadow-xl sticky top-36 space-y-4 border border-slate-800">
+            
+            <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+              <div class="flex items-center space-x-2">
+                <span class="flex h-3 w-3 relative">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                </span>
+                <h3 id="txt-preview-header" class="font-bold text-white text-sm uppercase tracking-wider">Prompt Risultante</h3>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <button onclick="downloadPromptAsMarkdown()" title="Scarica File .md" class="bg-slate-800 hover:bg-slate-700 text-slate-200 p-1.5 rounded-lg text-xs transition border border-slate-700">
+                  <i class="fa-solid fa-file-arrow-down"></i>
+                </button>
+                <button onclick="copyGeneratedPrompt()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 shadow-sm active:scale-95">
+                  <i class="fa-regular fa-copy"></i>
+                  <span id="copy-btn-text">Copia Prompt</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Assembled Prompt Box -->
+            <div id="output-prompt" class="bg-slate-950 p-4 rounded-lg font-mono text-xs leading-relaxed text-slate-300 whitespace-pre-wrap border border-slate-800/80 min-h-[360px] max-h-[520px] overflow-y-auto select-all">
+              <!-- Dynamically Generated -->
+            </div>
+
+            <!-- Quick Action Hints -->
+            <div class="p-3 bg-slate-800/60 rounded-lg text-xs text-slate-300 space-y-1 border border-slate-700/50">
+              <p class="font-semibold text-amber-300 flex items-center gap-1">
+                <i class="fa-solid fa-lightbulb"></i> <span id="txt-hint-title">Istruzione di utilizzo:</span>
+              </p>
+              <p id="txt-hint-body" class="text-slate-400">Copia questo prompt strutturato ed incollalo in ChatGPT, Gemini o Claude per ottenere risposte precise e contestualizzate per la scuola.</p>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- TAB 2: LIBRARY -->
+    <div id="content-library" class="hidden space-y-6">
+      
+      <!-- Library Control Bar -->
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm space-y-4">
+        
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h2 id="txt-library-title" class="text-xl font-bold text-slate-900 flex items-center gap-2">
+              <i class="fa-solid fa-book-open text-indigo-600"></i> Libreria Esempi Pronti per Docenti
+            </h2>
+            <p id="txt-library-subtitle" class="text-slate-500 text-xs sm:text-sm mt-0.5">Modelli pronti con vincoli operativi reali ed output specifici (Artefatti digitali, Infografiche, Presentazioni).</p>
+          </div>
+
+          <!-- Search Input -->
+          <div class="w-full md:w-80 relative">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+            <input type="text" id="library-search" oninput="filterLibrary()" placeholder="Cerca prompt, argomenti, discipline..." class="w-full pl-9 pr-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+          </div>
+        </div>
+
+        <!-- Subcategory Filters Container -->
+        <div id="subcat-filter-container" class="flex flex-wrap items-center gap-1.5 border-t border-slate-100 pt-3 text-xs">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <!-- Result counter bar -->
+        <div class="text-xs text-slate-500 font-medium flex justify-between items-center pt-1 border-t border-slate-50">
+          <span id="results-count">Mostrati i prompt della libreria</span>
+          <span class="text-indigo-600 font-semibold cursor-pointer hover:underline" onclick="resetLibraryFilters()"><i class="fa-solid fa-rotate mr-1"></i><span id="btn-reset-filters">Azzera filtri</span></span>
+        </div>
+
+      </div>
+
+      <!-- Library Grid -->
+      <div id="library-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Preset Cards Generated via JavaScript -->
+      </div>
+
+    </div>
+
+    <!-- TAB 3: SAVED PROMPTS -->
+    <div id="content-saved" class="hidden space-y-6">
+      <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center justify-between flex-wrap gap-4">
+        <div>
+          <h2 id="txt-saved-title" class="text-xl font-bold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-bookmark text-amber-500"></i> I Miei Prompt Salvati
+          </h2>
+          <p id="txt-saved-subtitle" class="text-slate-500 text-xs sm:text-sm mt-0.5">
+            Raccolta dei tuoi prompt personalizzati o preferiti salvati nel browser.
+          </p>
+        </div>
+        <div class="flex items-center gap-2">
+          <!-- Hidden File Input for JSON Import -->
+          <input type="file" id="file-import-json" accept=".json" onchange="handleImportJSON(event)" class="hidden">
+          <button onclick="importSavedPromptsJSON()" class="px-3 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-lg text-xs font-semibold transition flex items-center gap-1.5 border border-indigo-200">
+            <i class="fa-solid fa-file-import"></i> <span id="btn-import-text">Importa Backup (JSON)</span>
+          </button>
+          <button onclick="exportSavedPromptsJSON()" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
+            <i class="fa-solid fa-download"></i> <span id="btn-export-text">Esporta Backup (JSON)</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="saved-grid" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Saved Prompt Cards dynamically loaded here -->
+      </div>
+    </div>
+
+    <!-- TAB 4: GUIDE -->
+    <div id="content-guide" class="hidden space-y-8 max-w-4xl mx-auto">
+      
+      <div class="bg-white p-6 sm:p-8 rounded-xl border border-slate-200 shadow-sm space-y-6">
+        
+        <div class="border-b border-slate-200 pb-4">
+          <h2 id="txt-guide-title" class="text-2xl font-bold text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-graduation-cap text-indigo-600"></i> Guida alla Formula R-C-O-V-O per la Scuola
+          </h2>
+          <p id="txt-guide-subtitle" class="text-slate-600 mt-1 text-sm">
+            Perché i prompt generici producono risposte vaghe e come la formula R-C-O-V-O garantisce risultati didatticamente efficaci e coerenti con le Indicazioni Nazionali.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 gap-5">
+          
+          <div class="flex gap-4 p-4 rounded-xl bg-blue-50/70 border border-blue-200">
+            <div class="w-10 h-10 rounded-xl bg-blue-600 text-white font-bold flex items-center justify-center shrink-0 shadow-sm">R</div>
+            <div class="space-y-1">
+              <h3 id="txt-guide-r-head" class="font-bold text-blue-950 text-base">1. RUOLO (Chi deve essere l'IA?)</h3>
+              <p id="txt-guide-r-desc" class="text-xs sm:text-sm text-blue-900">Assegna un'identità professionale precisa all'IA. Specifica ordine di scuola e disciplina/competenze.</p>
+              <div id="txt-guide-r-ex" class="font-mono text-xs bg-blue-100/70 text-blue-950 p-2 rounded border border-blue-200/50">
+                Esempio: "Sei un docente della Scuola Primaria esperto nelle Nuove Indicazioni Nazionali e in metodologie attive..."
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-4 p-4 rounded-xl bg-emerald-50/70 border border-emerald-200">
+            <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white font-bold flex items-center justify-center shrink-0 shadow-sm">C</div>
+            <div class="space-y-1">
+              <h3 id="txt-guide-c-head" class="font-bold text-emerald-950 text-base">2. CONTESTO (Qual è la situazione?)</h3>
+              <p id="txt-guide-c-desc" class="text-xs sm:text-sm text-emerald-900">Descrivi la classe, l'ordine di scuola, la presenza di alunni con BES/DSA o disabilità e il quadro metodologico.</p>
+              <div id="txt-guide-c-ex" class="font-mono text-xs bg-emerald-100/70 text-emerald-950 p-2 rounded border border-emerald-200/50">
+                Esempio: "Scuola Primaria, classe 3ª con 18 alunni, inclusi 2 studenti con DSA ed 1 con disabilità motoria..."
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-4 p-4 rounded-xl bg-amber-50/70 border border-amber-200">
+            <div class="w-10 h-10 rounded-xl bg-amber-600 text-white font-bold flex items-center justify-center shrink-0 shadow-sm">O</div>
+            <div class="space-y-1">
+              <h3 id="txt-guide-o1-head" class="font-bold text-amber-950 text-base">3. OBIETTIVO (Cosa deve fare?)</h3>
+              <p id="txt-guide-o1-desc" class="text-xs sm:text-sm text-amber-900">Dichiara esattamente l'azione didattica richiesta: creare un'UDA, una griglia di valutazione o un'attività inclusiva.</p>
+              <div id="txt-guide-o1-ex" class="font-mono text-xs bg-amber-100/70 text-amber-950 p-2 rounded border border-amber-200/50">
+                Esempio: "Elabora un'Unità di Apprendimento interdisciplinare di Educazione Civica incentrata sulla sostenibilità ambientale..."
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-4 p-4 rounded-xl bg-rose-50/70 border border-rose-200">
+            <div class="w-10 h-10 rounded-xl bg-rose-600 text-white font-bold flex items-center justify-center shrink-0 shadow-sm">V</div>
+            <div class="space-y-1">
+              <h3 id="txt-guide-v-head" class="font-bold text-rose-950 text-base">4. VINCOLI E LIMITI (Come deve farlo?)</h3>
+              <p id="txt-guide-v-desc" class="text-xs sm:text-sm text-rose-900">Inserisci riferimenti alle Indicazioni Nazionali, requisiti d'inclusività, tempi e indicazioni operative.</p>
+              <div id="txt-guide-v-ex" class="font-mono text-xs bg-rose-100/70 text-rose-950 p-2 rounded border border-rose-200/50">
+                Esempio: "Fai riferimento ai traguardi di competenza delle Nuove Indicazioni. Garantisci l'accessibilità per alunni BES e specifica le fasi."
+              </div>
+            </div>
+          </div>
+
+          <div class="flex gap-4 p-4 rounded-xl bg-purple-50/70 border border-purple-200">
+            <div class="w-10 h-10 rounded-xl bg-purple-600 text-white font-bold flex items-center justify-center shrink-0 shadow-sm">O</div>
+            <div class="space-y-1">
+              <h3 id="txt-guide-o2-head" class="font-bold text-purple-950 text-base">5. OUTPUT FORMATO (In quale formato rispondere?)</h3>
+              <p id="txt-guide-o2-desc" class="text-xs sm:text-sm text-purple-900">Dettaglia la struttura finale: tabella Markdown, elenco strutturato, sezioni con traguardi e obiettivi di apprendimento.</p>
+              <div id="txt-guide-o2-ex" class="font-mono text-xs bg-purple-100/70 text-purple-950 p-2 rounded border border-purple-200/50">
+                Esempio: "Rispondi sotto forma di tabella con sezioni: Obiettivi, Attività, Tempi, Strumenti e Criteri di Valutazione Formativa."
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-5 right-5 bg-slate-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-slate-700 transform translate-y-20 opacity-0 transition-all duration-300 z-50">
+    <i class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+    <span id="toast-message" class="text-xs font-medium">Prompt copiato negli appunti!</span>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-slate-900 text-slate-400 py-6 border-t border-slate-800 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 text-center text-xs space-y-1.5">
+      <p id="txt-footer-copy" class="font-semibold text-slate-200">
+        Francesco Picca @ 2026 • Generatore di Prompt per la Scuola (Formula R-C-O-V-O)
+      </p>
+      <p id="txt-footer-desc" class="text-slate-500">
+        Libreria di Esempi Didattici per la Scuola dell'Infanzia, Primaria, Secondaria di Primo e Secondo Grado.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // State Variables
+    let currentLang = 'it';
+    let currentTab = 'builder';
+    let activeSubCatFilter = 'all';
+    let userSavedPrompts = [];
+
+    try {
+      userSavedPrompts = JSON.parse(localStorage.getItem('user_saved_prompts') || '[]');
+    } catch(e) {
+      userSavedPrompts = [];
+    }
+
+    // Translations Dictionary for UI elements
+    const i18n = {
+      it: {
+        headerTitle: "Generatore di Prompt per la Scuola",
+        headerSubtitle: "Formula R-C-O-V-O • Casi Studio per Docenti",
+        headerBadge: "Piattaforma per Docenti",
+        tabBuilder: "Creatore di Prompt",
+        tabLibrary: "Libreria Esempi",
+        tabSaved: "Prompt Salvati",
+        tabGuide: "Come funziona il Metodo",
+        formulaTitle: "Formula R-C-O-V-O per Prompt Scolastici:",
+        badgeR: "1. RUOLO",
+        badgeC: "2. CONTESTO",
+        badgeO1: "3. OBIETTIVO",
+        badgeV: "4. VINCOLI",
+        badgeO2: "5. OUTPUT",
+        quickSelectLabel: "Selezione Rapida Ordine di Scuola",
+        rTitle: "RUOLO",
+        rSub: "Chi deve essere l'IA?",
+        rPlaceholder: "Es: Sei un docente di scuola dell'infanzia esperto nelle 'Nuove Indicazioni' e nella progettazione dei campi di esperienza...",
+        cTitle: "CONTESTO",
+        cSub: "Qual è la situazione specifica?",
+        cPlaceholder: "Es: Sezione eterogenea di 20 bambini di 3-5 anni, con presenza di 2 bambini con bisogni educativi speciali...",
+        o1Title: "OBIETTIVO",
+        o1Sub: "Cosa deve fare esattamente l'IA?",
+        o1Placeholder: "Es: Progetta un percorso laboratoriale di 4 settimane focalizzato sul campo 'Il sé e l'altro' e l'educazione all'empatia...",
+        vTitle: "VINCOLI E LIMITI",
+        vSub: "Come deve farlo? Cosa evitare?",
+        vPlaceholder: "Es: Mantieni un approccio ludico ed esperienziale. Allinea le attività con le Nuove Indicazioni Nazionali. Includi momenti d'osservazione...",
+        o2Title: "OUTPUT FORMATO",
+        o2Sub: "In quale formato deve rispondere?",
+        o2Placeholder: "Es: Presenta la risposta suddivisa in: Traguardi per lo sviluppo delle competenze, Attività settimanali, Spazi e Materiali, Criteri di Osservazione.",
+        btnReset: "Cancella Tutto",
+        btnSave: "Salva nei Miei Prompt",
+        previewHeader: "Prompt Risultante",
+        copyBtnText: "Copia Prompt",
+        hintTitle: "Istruzione di utilizzo:",
+        hintBody: "Copia questo prompt strutturato ed incollalo in ChatGPT, Gemini o Claude per ottenere risposte precise e contestualizzate per la scuola.",
+        libraryTitle: "Libreria Esempi Pronti per Docenti",
+        librarySubtitle: "Modelli pronti suddivisi per i diversi ordini di scuola e coerenti con le Nuove Indicazioni.",
+        searchPlaceholder: "Cerca prompt, argomenti, discipline...",
+        resetFilters: "Azzera filtri",
+        resultsCount: (shown, total) => `Mostrati ${shown} prompt`,
+        subcatAll: "Tutti gli ordini di scuola",
+        useTemplate: "Usa questo Prompt",
+        copyTemplate: "Copia Prompt",
+        toastCopied: "Prompt copiato negli appunti!",
+        toastLoaded: "Prompt caricato nel Creatore!",
+        savedTitle: "I Miei Prompt Salvati",
+        savedSubtitle: "Raccolta dei tuoi prompt personalizzati o preferiti salvati nel browser.",
+        btnImport: "Importa Backup (JSON)",
+        btnExport: "Esporta Backup (JSON)",
+        toastImportSuccess: (count) => `Importati ${count} prompt con successo!`,
+        toastImportError: "File JSON non valido o formato non supportato.",
+        guideTitle: "Guida alla Formula R-C-O-V-O per la Scuola",
+        guideSubtitle: "Perché i prompt generici producono risposte vaghe e come la formula R-C-O-V-O garantisce risultati didatticamente efficaci e coerenti con le Indicazioni Nazionali.",
+        guideRHead: "1. RUOLO (Chi deve essere l'IA?)",
+        guideRDesc: "Assegna un'identità professionale precisa all'IA. Specifica ordine di scuola e disciplina/competenze.",
+        guideREx: "Esempio: \"Sei un docente della Scuola Primaria esperto nelle Nuove Indicazioni Nazionali e in metodologie attive...\"",
+        guideCHead: "2. CONTESTO (Qual è la situazione?)",
+        guideCDesc: "Descrivi la classe, l'ordine di scuola, la presenza di alunni con BES/DSA o disabilità e il quadro metodologico.",
+        guideCEx: "Esempio: \"Scuola Primaria, classe 3ª con 18 alunni, inclusi 2 studenti con DSA ed 1 con disabilità motoria...\"",
+        guideO1Head: "3. OBIETTIVO (Cosa deve fare?)",
+        guideO1Desc: "Dichiara esattamente l'azione didattica richiesta: creare un'UDA, una griglia di valutazione o un'attività inclusiva.",
+        guideO1Ex: "Esempio: \"Elabora un'Unità di Apprendimento interdisciplinare di Educazione Civica incentrata sulla sostenibilità ambientale...\"",
+        guideVHead: "4. VINCOLI E LIMITI (Come deve farlo?)",
+        guideVDesc: "Inserisci riferimenti alle Indicazioni Nazionali, requisiti d'inclusività, tempi e indicazioni operative.",
+        guideVEx: "Esempio: \"Fai riferimento ai traguardi di competenza delle Nuove Indicazioni. Garantisci l'accessibilità per alunni BES e specifica le fasi.\"",
+        guideO2Head: "5. OUTPUT FORMATO (In quale formato rispondere?)",
+        guideO2Desc: "Dettaglia la struttura finale: tabella Markdown, elenco strutturato, sezioni con traguardi e obiettivi di apprendimento.",
+        guideO2Ex: "Esempio: \"Rispondi sotto forma di tabella con sezioni: Obiettivi, Attività, Tempi, Strumenti e Criteri di Valutazione Formativa.\"",
+        footerCopy: "Francesco Picca @ 2026 • Generatore di Prompt per la Scuola (Formula R-C-O-V-O)",
+        footerDesc: "Libreria di Esempi Didattici per la Scuola dell'Infanzia, Primaria, Secondaria di Primo e Secondo Grado.",
+        promptPrefixR: "RUOLO:",
+        promptPrefixC: "CONTESTO:",
+        promptPrefixO1: "OBIETTIVO:",
+        promptPrefixV: "VINCOLI E LIMITI:",
+        promptPrefixO2: "FORMATO OUTPUT:"
+      },
+      en: {
+        headerTitle: "School Prompt Generator",
+        headerSubtitle: "R-C-O-V-O Formula • Case Studies for Teachers",
+        headerBadge: "Platform for Teachers",
+        tabBuilder: "Prompt Builder",
+        tabLibrary: "Examples Library",
+        tabSaved: "Saved Prompts",
+        tabGuide: "How Method Works",
+        formulaTitle: "R-C-O-V-O Formula for School Prompts:",
+        badgeR: "1. ROLE",
+        badgeC: "2. CONTEXT",
+        badgeO1: "3. OBJECTIVE",
+        badgeV: "4. CONSTRAINTS",
+        badgeO2: "5. OUTPUT",
+        quickSelectLabel: "Quick School Level Selection",
+        rTitle: "ROLE",
+        rSub: "Who should the AI act as?",
+        rPlaceholder: "E.g.: You are a kindergarten teacher expert in learning field design...",
+        cTitle: "CONTEXT",
+        cSub: "What is the specific situation?",
+        cPlaceholder: "E.g.: Mixed-age group of 20 children, including 2 children with special educational needs...",
+        o1Title: "OBJECTIVE",
+        o1Sub: "What exactly should the AI do?",
+        o1Placeholder: "E.g.: Design a 4-week workshop focused on 'Self and Other' and empathy building...",
+        vTitle: "CONSTRAINTS & LIMITS",
+        vSub: "How should it do it? What to avoid?",
+        vPlaceholder: "E.g.: Max 45 min sessions, budget-free natural materials, no interactive screens...",
+        o2Title: "OUTPUT FORMAT",
+        o2Sub: "In what format should it respond?",
+        o2Placeholder: "E.g.: Interactive digital artifact layout, Canva infographic scheme, PDF cards...",
+        btnReset: "Clear All",
+        btnSave: "Save to My Prompts",
+        previewHeader: "Generated Prompt",
+        copyBtnText: "Copy Prompt",
+        hintTitle: "How to use:",
+        hintBody: "Copy this structured prompt and paste it into ChatGPT, Gemini, or Claude to get precise, context-aware answers tailored for teaching.",
+        libraryTitle: "Ready Examples Library for Teachers",
+        librarySubtitle: "Ready templates with real classroom constraints and specific outputs (Digital Artifacts, Infographics, Slide Decks).",
+        searchPlaceholder: "Search prompts, topics, subjects...",
+        resetFilters: "Reset filters",
+        resultsCount: (shown, total) => `Showing ${shown} prompts`,
+        subcatAll: "All School Levels",
+        useTemplate: "Use this Prompt",
+        copyTemplate: "Copy Prompt",
+        toastCopied: "Prompt copied to clipboard!",
+        toastLoaded: "Prompt loaded into Builder!",
+        savedTitle: "My Saved Prompts",
+        savedSubtitle: "Collection of your custom or favorite prompts saved in your browser.",
+        btnImport: "Import Backup (JSON)",
+        btnExport: "Export Backup (JSON)",
+        toastImportSuccess: (count) => `Successfully imported ${count} prompt(s)!`,
+        toastImportError: "Invalid JSON file or unsupported format.",
+        guideTitle: "Guide to the R-C-O-V-O Formula for Teachers",
+        guideSubtitle: "Why generic prompts produce vague answers and how R-C-O-V-O ensures effective, curriculum-aligned results.",
+        guideRHead: "1. ROLE (Who should the AI be?)",
+        guideRDesc: "Assign a precise professional identity to the AI. Specify school level and subject/skills.",
+        guideREx: "Example: \"You are a Primary School Teacher specialized in active learning...\"",
+        guideCHead: "2. CONTEXT (What is the situation?)",
+        guideCDesc: "Describe the class, school level, presence of special needs students, and pedagogical setup.",
+        guideCEx: "Example: \"Primary school, 3rd grade with 18 students, including 2 with dyslexia...\"",
+        guideO1Head: "3. OBJECTIVE (What must it do?)",
+        guideO1Desc: "State the main required action: create a learning unit, assessment grid, or inclusive activity.",
+        guideO1Ex: "Example: \"Design an interdisciplinary Citizenship Learning Unit focused on sustainability...\"",
+        guideVHead: "4. CONSTRAINTS & LIMITS (How must it do it?)",
+        guideVDesc: "Real classroom constraints: maximum time, lack of tablets, budget zero, specific learner barriers.",
+        guideVEx: "Example: \"Max 2 hours total time, zero digital devices available, low attention span...\"",
+        guideO2Head: "5. OUTPUT FORMAT (What response format?)",
+        guideO2Desc: "Detail the exact deliverable format: Canva infographic outline, PowerPoint slides, interactive digital artifact.",
+        guideO2Ex: "Example: \"Respond with a step-by-step layout for a digital infographic and printable PDF checklist.\"",
+        footerCopy: "Francesco Picca @ 2026 • School Prompt Generator (R-C-O-V-O Formula)",
+        footerDesc: "Teaching Library for Kindergarten, Primary, Middle, and High School Teachers.",
+        promptPrefixR: "ROLE:",
+        promptPrefixC: "CONTEXT:",
+        promptPrefixO1: "OBJECTIVE:",
+        promptPrefixV: "CONSTRAINTS & LIMITS:",
+        promptPrefixO2: "OUTPUT FORMAT:"
+      }
+    };
+
+    // Subcategory Translation Map
+    const subCatTranslations = {
+      en: {
+        "Infanzia": "Kindergarten",
+        "Primaria": "Primary School",
+        "Secondaria di primo grado": "Middle School",
+        "Secondaria di secondo grado": "High School"
+      }
+    };
+
+    // Generator of Rich Real-World Teacher Presets
+    function buildDocentiPresets() {
+      const list = [];
+
+      const infanziaTopics = [
+        { t: "Laboratorio Emotivo e Regole della Sezione", subj: "Aree di Sviluppo Sociale", focus: "gestione conflitti, empatia, rispetto dei turni e alfabetizzazione emotiva" },
+        { t: "Esplorazione Sensoriale delle Stagioni", subj: "Esplorazione e Natura", focus: "outdoor education, manipolazione tattile, materiali naturali e schede osservative" },
+        { t: "Fiaba Animata e Drammatizzazione", subj: "I Discorsi e le Parole", focus: "ascolto attivo, mimica corporea, arricchimento lessicale e teatro delle marionette" },
+        { t: "Prassia Fine e Ritmo con la Musica", subj: "Corpo e Movimento", focus: "coordinamento oculo-manuale, ritmo musicale, pittura digitale con le dita" },
+        { t: "I Colori Primari ed Esperimenti Visivi", subj: "Immagini, Suoni, Colori", focus: "mescolanza dei colori, percezione visiva, cartelloni murali collettivi" },
+        { t: "Pazienza e Attesa: Il Piccolo Orto in Classe", subj: "Natura e Scienza", focus: "semina di legumi, cura giornaliera, grafico visivo di crescita" },
+        { t: "I Suoni della Natura e del Corpo", subj: "Educazione Sonora", focus: "discriminazione acustica, strumenti a percussione autocostruiti" },
+        { t: "Identità e Schema Corporeo: Il Mio Ritratto", subj: "Il Sé e l'Altro", focus: "autopercezione, parti del viso, disegno a specchio" },
+        { t: "I Numeri e la Numerosità con le Pigne", subj: "La Conoscenza del Mondo", focus: "primi concetti di quantità, raggruppamento e corrispondenza uno-a-uno" },
+        { t: "Le Forme Geometriche nel Mondo Reale", subj: "Geometria Intuitiva", focus: "riconosci cerchio/quadrato/triangolo negli oggetti della sezione" }
+      ];
+
+      const primariaTopics = [
+        { t: "Compito di Realtà: Il Giornalino della Sostenibilità", subj: "Italiano & Ed. Civica", focus: "scrittura cooperativa, impaginazione di prima pagina, font ad alta leggibilità" },
+        { t: "Matematica Pratica: Mercatino e Risoluzione Problemi Euro", subj: "Matematica", focus: "compravendita, calcolo mentale con decimali, fac-simile banconote" },
+        { t: "Storia Locale: Intervista ai Nonni sul Passato", subj: "Storia", focus: "fonti orali, linea del tempo visiva, registrazione e trascrizione guidata" },
+        { t: "Geografia Attiva: Mappa del Quartiere e Segnaletica", subj: "Geografia", focus: "orientamento, punti di riferimento, legenda dei simboli geografici" },
+        { t: "Scienze: Ciclo dell'Acqua e Laboratorio di Evaporazione", subj: "Scienze", focus: "esperimento pratico con barattoli, diario visivo di bordo" },
+        { t: "Inglese: Daily Routine e Orologio delle Attività", subj: "Lingua Inglese", focus: "vocabolario quotidiano, orologio cartaceo interattivo, orali a coppie" },
+        { t: "Arte: Dipingere come i Macchiaioli e la Natura", subj: "Arte e Immagine", focus: "tecnica del colore a macchia, analisi visiva di quadri storici" },
+        { t: "Musica: Poliritmia con Percussioni di Recupero", subj: "Musica", focus: "lettura ritmica elementare, coordinamento di gruppo" },
+        { t: "Ed. Fisica: Percorso ad Ostacoli e Regole di Gioco", subj: "Educazione Motoria", focus: "schemi motori di base, rispetto dell'avversario e fair play" },
+        { t: "Ed. Civica: La Costituzione Spiegata ai Ragazzi", subj: "Educazione Civica", focus: "articoli fondamentali (1-12), cartelloni illustrati sui diritti" }
+      ];
+
+      const sec1Topics = [
+        { t: "Cyberbullismo e Privacy: Infografica Interattiva", subj: "Tecnologia & Ed. Civica", focus: "sicurezza online, netiquette, layout per Canva o Genially" },
+        { t: "Scienze e Fisica: Esperimenti di Galleggiamento (Archimede)", subj: "Scienze", focus: "metodo scientifico IBSE, tabelle di misurazione dati, principio di galleggiamento" },
+        { t: "Italiano: Scrittura Creativa e Struttura della Tragedia/Commedia", subj: "Italiano", focus: "analisi dei personaggi, testo narrativo, mappe concettuali" },
+        { t: "Storia: La Rivoluzione Industriale e le Trasformazioni Sociali", subj: "Storia", focus: "confronto fonti storiche, causa-effetto, mappa concettuale interattiva" },
+        { t: "Geografia: I Biomi Terrestri e il Cambiamento Climatico", subj: "Geografia", focus: "dati demografici e climatici, schede Paese, grafici di temperatura" },
+        { t: "Matematica: Geometria Solida e Modellazione 3D", subj: "Matematica", focus: "calcolo di superficie e volume, utilizzo di GeoGebra, figure composte" },
+        { t: "Inglese: Role-play in Aeroporto e Travel Brochure", subj: "Lingua Inglese", focus: "dialoghi realistici, brochures turistiche, livello A2/B1" },
+        { t: "Francese/Spagnolo: Presentazione della Propria Città", subj: "Seconda Lingua Comunitaria", focus: "lessico urbano, indicazioni stradali, audio-guida registrata" },
+        { t: "Arte: Prospettiva Linear-Centrale nell'Architettura", subj: "Arte e Immagine", focus: "punto di fuga, disegno tecnico guidato, analisi opere del Rinascimento" },
+        { t: "Musica: Analisi della Forma Sonata e Ascolto Guidato", subj: "Musica", focus: "struttura musicale, strumenti dell'orchestra sinfonica, schede d'ascolto" }
+      ];
+
+      const sec2Topics = [
+        { t: "Debate su IA ed Etica: Presentazione e Argomentazione", subj: "Filosofia & Ed. Civica", focus: "public speaking, tesi Pro/Contro, ricerche su fonti accademiche verificate" },
+        { t: "PCTO / Economia: Business Plan per Start-up Green", subj: "Economia Aziendale", focus: "Executive Summary, analisi SWOT, calcolo del Break-Even Point" },
+        { t: "Fisica: Elettromagnetismo ed Equazioni di Maxwell", subj: "Fisica", focus: "risoluzione problemi complessi, simulazioni PhET, sintesi concettuale" },
+        { t: "Letteratura: L'Inetto nella Letteratura del '900 (Svevo/Pirandello)", subj: "Italiano", focus: "saggio breve, analisi del testo, paralleli storico-filosofici" },
+        { t: "Chimica: Reazioni Redox e Stechiometria Applicata", subj: "Chimica / Scienze", focus: "bilanciamento reazioni, sicurezza in laboratorio, schede tecniche" },
+        { t: "Informatica: Progettazione di un Database Relazionale (SQL)", subj: "Informatica", focus: "diagramma ER, query SQL principali, normalizzazione tabelle" },
+        { t: "Storia: La Guerra Fredda e la Politica dei Blocchi", subj: "Storia", focus: "analisi geopolitica, documenti d'epoca, simulazione conferenza diplomatica" },
+        { t: "Inglese: Essay Argomentativo su Globalizzazione e Lavoro", subj: "Lingua Inglese", focus: "struttura B2/C1 essay, connettivi logici, analisi critica di articoli" },
+        { t: "Matematica: Studio di Funzione e Calcolo Integrale", subj: "Matematica", focus: "passaggi algebrici, grafico della funzione, problemi di massimo e minimo" },
+        { t: "Diritto: La Costituzione Italiana ed il Funzionamento del Parlamento", subj: "Diritto", focus: "iter legislativo, organi costituzionali, analisi di sentenze storiche" }
+      ];
+
+      function generate50ForLevel(levelKey, levelBadge, topics) {
+        const result = [];
+        const outputFormatsIt = [
+          "Format richiesto: Schema strutturato per la creazione di un'Infografica Digitale (es. Canva/Genially), comprensivo di layout grafico, testi per sezioni, icone consigliate e check-list di autovalutazione.",
+          "Format richiesto: Struttura dettagliata per una Presentazione Multimediale (es. PowerPoint/Google Presentazioni), con scaletta di 6-8 slide, punti chiave, note per l'oratore e griglia di valutazione dell'esposizione.",
+          "Format richiesto: Canovaccio per un Podcast o Audioracconto Didattico, articolato in: Script audio diviso in scene, ruoli dei parlanti, effetti sonori/musiche di sottofondo e scheda d'ascolto per la classe.",
+          "Format richiesto: Guida operativa per un Laboratorio Esperienziale / Compito di Realtà, articolata in: Scheda di istruzioni step-by-step per gli studenti, ruolo del docente, materiali previsti e Rubrica Valutativa in Tabella.",
+          "Format richiesto: Layout grafico e concettuale per la realizzazione di una Mappa Menta-Concettuale Interattiva, con nodo centrale, nodi secondari, legami logici ed esercizi di verifica immediata.",
+          "Format richiesto: Struttura per un Giornale / Newsletter Scolastica Digitale, comprensiva di prima pagina, articoli d'approfondimento divisi in colonne, box per immagini/grafici e criteri di revisione tra pari (peer review).",
+          "Format richiesto: Format per un Debate o Discussione Guidata, suddiviso in: Regolamento dei tempi, ruoli delle squadre (Pro/Contro), argomentazioni d'apertura e Rubrica di Valutazione per il Public Speaking.",
+          "Format richiesto: Schema per un Portfolio Digitale delle Competenze, articolato in: Scheda di autoriflessione, sezione di raccolta dei prodotti/artefatti, criteri di autovalutazione e feedback del docente."
+        ];
+
+        const outputFormatsEn = [
+          "Required format: Structured outline for a Digital Infographic (e.g., Canva/Genially), including visual layout, section texts, icon suggestions, and a self-assessment checklist.",
+          "Required format: Detailed layout for a Slide Presentation, including a 6-8 slide outline, key talking points, speaker notes, and an oral presentation evaluation grid.",
+          "Required format: Script and outline for an Educational Podcast/Audio Story: scene breakdown, speaker roles, sound effects notes, and a peer listening worksheet.",
+          "Required format: Step-by-step Hands-on Workshop / Real-World Task Guide: student instruction sheet, teacher facilitation notes, required items, and an Assessment Rubric Table.",
+          "Required format: Layout and structure for an Interactive Mind Map, detailing main topic node, sub-branches, logical links, and quick check questions.",
+          "Required format: Layout for a Digital School Newspaper / Newsletter, featuring front-page lead, column articles, media callout boxes, and peer review criteria.",
+          "Required format: Debate / Structured Class Discussion Guide, featuring time control rules, Pro/Con team role assignments, opening arguments, and a Public Speaking Rubric.",
+          "Required format: Digital Student Portfolio Template: self-reflection prompts, artifact collection sections, self-assessment criteria, and teacher feedback rubric."
+        ];
+
+        for (let i = 1; i <= 50; i++) {
+          const baseTopic = topics[(i - 1) % topics.length];
+          const varNum = Math.ceil(i / topics.length);
+          const code = levelKey.toLowerCase().substring(0, 4) + "-" + i;
+
+          let titleIt = `${baseTopic.t} (Modulo ${varNum})`;
+          let titleEn = `${baseTopic.t} (Module ${varNum})`;
+
+          let ruoloIt = `Sei un docente specializzato in ${baseTopic.subj} per la scuola dell'ordine ${levelBadge}, con pluriennale esperienza nella didattica per competenze e metodologie attive.`;
+          let ruoloEn = `You are an expert teacher in ${baseTopic.subj} for ${levelBadge} school level, experienced in competency-based education.`;
+
+          let contestoIt = `Classe/Gruppo della scuola ${levelBadge} composto da circa 20 studenti con livelli di apprendimento eterogenei e presenza di Bisogni Educativi Speciali (BES/DSA). Focus didattico su: ${baseTopic.focus}.`;
+          let contestoEn = `Class of ~20 students at ${levelBadge} level with diverse learning needs, including SEN/Dyslexia. Educational focus on: ${baseTopic.focus}.`;
+
+          let obiettivoIt = `Progetta un'attività o Unità di Apprendimento (UDA) completa ed inclusiva sul tema: "${baseTopic.t}" per sviluppare competenze disciplinari e trasversali.`;
+          let obiettivoEn = `Design a complete inclusive Learning Unit/Activity on "${baseTopic.t}" targeting core subject skills.`;
+
+          let vincoliIt = `Tempo previsto: ${i % 2 === 0 ? '2 ore di lezione' : '4 ore articolate in 2 sessioni'}. Utilizzo di metodologie inclusive, chiarezza espositiva, adeguamento per alunni con DSA o BES e divieto di attività eccessivamente nozionistiche.`;
+          let vincoliEn = `Duration: ${i % 2 === 0 ? '2 hours' : '4 hours across 2 sessions'}. Inclusive active methods, structured clear instructions, adapted for special needs.`;
+
+          let outputIt = outputFormatsIt[(i - 1) % outputFormatsIt.length];
+          let outputEn = outputFormatsEn[(i - 1) % outputFormatsEn.length];
+
+          result.push({
+            id: code,
+            roleCategory: "docente",
+            subCategory: levelKey,
+            title: { it: titleIt, en: titleEn },
+            badge: { it: levelBadge, en: levelBadge },
+            ruolo: { it: ruoloIt, en: ruoloEn },
+            contesto: { it: contestoIt, en: contestoEn },
+            obiettivo: { it: obiettivoIt, en: obiettivoEn },
+            vincoli: { it: vincoliIt, en: vincoliEn },
+            output: { it: outputIt, en: outputEn }
+          });
+        }
+        return result;
+      }
+
+      list.push(...generate50ForLevel("Infanzia", "Infanzia", infanziaTopics));
+      list.push(...generate50ForLevel("Primaria", "Primaria", primariaTopics));
+      list.push(...generate50ForLevel("Secondaria di primo grado", "Sec. I Grado", sec1Topics));
+      list.push(...generate50ForLevel("Secondaria di secondo grado", "Sec. II Grado", sec2Topics));
+
+      return list;
+    }
+
+    const presetLibrary = buildDocentiPresets();
+
+    // Language Switcher Function
+    function setLanguage(lang) {
+      currentLang = lang;
+      localStorage.setItem('school_prompt_lang', lang);
+      document.documentElement.lang = lang;
+
+      const btnIt = document.getElementById('btn-lang-it');
+      const btnEn = document.getElementById('btn-lang-en');
+      if (lang === 'it') {
+        btnIt.classList.add('lang-btn-active');
+        btnIt.classList.remove('text-indigo-200');
+        btnEn.classList.remove('lang-btn-active');
+        btnEn.classList.add('text-indigo-200');
+      } else {
+        btnEn.classList.add('lang-btn-active');
+        btnEn.classList.remove('text-indigo-200');
+        btnIt.classList.remove('lang-btn-active');
+        btnIt.classList.add('text-indigo-200');
+      }
+
+      const t = i18n[lang];
+      document.getElementById('txt-header-title').innerText = t.headerTitle;
+      document.getElementById('txt-header-subtitle').innerText = t.headerSubtitle;
+      document.getElementById('txt-header-badge').innerText = t.headerBadge;
+
+      document.getElementById('txt-tab-builder').innerText = t.tabBuilder;
+      document.getElementById('txt-tab-library').innerText = t.tabLibrary;
+      document.getElementById('txt-tab-saved').innerText = t.tabSaved;
+      document.getElementById('txt-tab-guide').innerText = t.tabGuide;
+
+      document.getElementById('txt-formula-title').innerText = t.formulaTitle;
+      document.getElementById('badge-r').innerText = t.badgeR;
+      document.getElementById('badge-c').innerText = t.badgeC;
+      document.getElementById('badge-o1').innerText = t.badgeO1;
+      document.getElementById('badge-v').innerText = t.badgeV;
+      document.getElementById('badge-o2').innerText = t.badgeO2;
+
+      document.getElementById('lbl-quick-select').innerHTML = `<i class="fa-solid fa-bolt text-amber-500"></i> ${t.quickSelectLabel}`;
+
+      document.getElementById('lbl-r-title').innerText = t.rTitle;
+      document.getElementById('lbl-r-sub').innerText = t.rSub;
+      document.getElementById('input-ruolo').placeholder = t.rPlaceholder;
+
+      document.getElementById('lbl-c-title').innerText = t.cTitle;
+      document.getElementById('lbl-c-sub').innerText = t.cSub;
+      document.getElementById('input-contesto').placeholder = t.cPlaceholder;
+
+      document.getElementById('lbl-o1-title').innerText = t.o1Title;
+      document.getElementById('lbl-o1-sub').innerText = t.o1Sub;
+      document.getElementById('input-obiettivo').placeholder = t.o1Placeholder;
+
+      document.getElementById('lbl-v-title').innerText = t.vTitle;
+      document.getElementById('lbl-v-sub').innerText = t.vSub;
+      document.getElementById('input-vincoli').placeholder = t.vPlaceholder;
+
+      document.getElementById('lbl-o2-title').innerText = t.o2Title;
+      document.getElementById('lbl-o2-sub').innerText = t.o2Sub;
+      document.getElementById('input-output').placeholder = t.o2Placeholder;
+
+      document.getElementById('btn-reset-text').innerText = t.btnReset;
+      document.getElementById('btn-save-text').innerText = t.btnSave;
+      document.getElementById('txt-preview-header').innerText = t.previewHeader;
+      document.getElementById('copy-btn-text').innerText = t.copyBtnText;
+      document.getElementById('txt-hint-title').innerText = t.hintTitle;
+      document.getElementById('txt-hint-body').innerText = t.hintBody;
+
+      // Library UI
+      document.getElementById('txt-library-title').innerHTML = `<i class="fa-solid fa-book-open text-indigo-600"></i> ${t.libraryTitle}`;
+      document.getElementById('txt-library-subtitle').innerText = t.librarySubtitle;
+      document.getElementById('library-search').placeholder = t.searchPlaceholder;
+      document.getElementById('btn-reset-filters').innerText = t.resetFilters;
+
+      // Saved UI
+      document.getElementById('txt-saved-title').innerHTML = `<i class="fa-solid fa-bookmark text-amber-500"></i> ${t.savedTitle}`;
+      document.getElementById('txt-saved-subtitle').innerText = t.savedSubtitle;
+      document.getElementById('btn-import-text').innerText = t.btnImport;
+      document.getElementById('btn-export-text').innerText = t.btnExport;
+
+      // Guide UI
+      document.getElementById('txt-guide-title').innerHTML = `<i class="fa-solid fa-graduation-cap text-indigo-600"></i> ${t.guideTitle}`;
+      document.getElementById('txt-guide-subtitle').innerText = t.guideSubtitle;
+      document.getElementById('txt-guide-r-head').innerText = t.guideRHead;
+      document.getElementById('txt-guide-r-desc').innerText = t.guideRDesc;
+      document.getElementById('txt-guide-r-ex').innerText = t.guideREx;
+      document.getElementById('txt-guide-c-head').innerText = t.guideCHead;
+      document.getElementById('txt-guide-c-desc').innerText = t.guideCDesc;
+      document.getElementById('txt-guide-c-ex').innerText = t.guideCEx;
+      document.getElementById('txt-guide-o1-head').innerText = t.guideO1Head;
+      document.getElementById('txt-guide-o1-desc').innerText = t.guideO1Desc;
+      document.getElementById('txt-guide-o1-ex').innerText = t.guideO1Ex;
+      document.getElementById('txt-guide-v-head').innerText = t.guideVHead;
+      document.getElementById('txt-guide-v-desc').innerText = t.guideVDesc;
+      document.getElementById('txt-guide-v-ex').innerText = t.guideVEx;
+      document.getElementById('txt-guide-o2-head').innerText = t.guideO2Head;
+      document.getElementById('txt-guide-o2-desc').innerText = t.guideO2Desc;
+      document.getElementById('txt-guide-o2-ex').innerText = t.guideO2Ex;
+
+      // Footer UI
+      document.getElementById('txt-footer-copy').innerText = t.footerCopy;
+      document.getElementById('txt-footer-desc').innerText = t.footerDesc;
+
+      updatePrompt();
+      renderSubcategoryFilters();
+      filterLibrary();
+      if(currentTab === 'saved') renderSavedPrompts();
+    }
+
+    function switchTab(tabId) {
+      currentTab = tabId;
+      document.getElementById('content-builder').classList.add('hidden');
+      document.getElementById('content-library').classList.add('hidden');
+      document.getElementById('content-saved').classList.add('hidden');
+      document.getElementById('content-guide').classList.add('hidden');
+
+      document.getElementById('tab-builder').classList.remove('tab-active');
+      document.getElementById('tab-library').classList.remove('tab-active');
+      document.getElementById('tab-saved').classList.remove('tab-active');
+      document.getElementById('tab-guide').classList.remove('tab-active');
+
+      document.getElementById(`content-${tabId}`).classList.remove('hidden');
+      document.getElementById(`tab-${tabId}`).classList.add('tab-active');
+
+      if (tabId === 'saved') {
+        renderSavedPrompts();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function injectOutputPreset(type) {
+      const outputInput = document.getElementById('input-output');
+      if (type === 'rubrica') {
+        outputInput.value = "Format richiesto: Rubrica Valutativa analitica in forma di tabella Markdown suddivisa in: Dimensioni/Criteri, Livelli di padronanza (Avanzato, Intermedio, Base, In Via di Prima Acquisizione) e Descrittori di prestazione osservabili.";
+      } else if (type === 'uda') {
+        outputInput.value = "Format richiesto: Schema completo di Unità di Apprendimento (UDA) organizzato in: Titolo, Traguardi di Competenza, Compito di Realtà, Fasi operative (con tempi e metodologie), Strumenti di valutazione e Connessioni Interdisciplinari.";
+      } else if (type === 'infografica') {
+        outputInput.value = "Format richiesto: Layout e scaletta concettuale per la realizzazione di una Infografica Digitale su Canva/Genially, articolata in: Titolo d'impatto, 4-5 sezioni sintetiche, suggerimenti grafici/icone ed elementi interattivi.";
+      } else if (type === 'verifica') {
+        outputInput.value = "Format richiesto: Prova di verifica inclusiva adatta anche ad alunni con DSA o BES, comprensiva di: Testo ad alta leggibilità, domande a risposta multipla/guidata, griglia di correzione e riquadro con suggerimenti compensativi.";
+      }
+      updatePrompt();
+    }
+
+    function saveCurrentPrompt() {
+      const r = document.getElementById('input-ruolo').value.trim();
+      const c = document.getElementById('input-contesto').value.trim();
+      const o1 = document.getElementById('input-obiettivo').value.trim();
+      const v = document.getElementById('input-vincoli').value.trim();
+      const o2 = document.getElementById('input-output').value.trim();
+
+      if (!r && !c && !o1 && !v && !o2) {
+        showToast("Compila almeno un campo prima di salvare!");
+        return;
+      }
+
+      // Imposta il titolo direttamente con il testo dell'Obiettivo + Emoji tematica
+      let generatedTitle = formatCleanTitle(r, o1);
+
+      const newPrompt = {
+        id: 'custom-' + Date.now(),
+        title: generatedTitle,
+        date: new Date().toLocaleDateString(),
+        ruolo: r,
+        contesto: c,
+        obiettivo: o1,
+        vincoli: v,
+        output: o2
+      };
+
+      userSavedPrompts.unshift(newPrompt);
+      localStorage.setItem('user_saved_prompts', JSON.stringify(userSavedPrompts));
+      showToast("Prompt salvato nei Preferiti!");
+    }
+
+    // Helper per utilizzare il testo dell'Obiettivo come titolo abbinato all'emoji tematica
+    function formatCleanTitle(ruolo, obiettivo) {
+      if (obiettivo) {
+        let titleText = obiettivo.trim();
+
+        // Mappatura automatica delle emoji in base al contenuto dell'Obiettivo
+        const textLower = (titleText + ' ' + ruolo).toLowerCase();
+        let emoji = '💡';
+
+        if (textLower.match(/matematica|geometria|numeri|calcolo|problemi|euro|equazion|integra|math/)) emoji = '📐';
+        else if (textLower.match(/storia|passato|rivoluzione|guerra|fonte|history|medioevo|rinascimento/)) emoji = '📜';
+        else if (textLower.match(/geografia|mappa|biom|quartiere|paese|geography|territorio/)) emoji = '🗺️';
+        else if (textLower.match(/scienza|esperiment|acqua|chimica|fisica|biolog|science|natura|orto/)) emoji = '🔬';
+        else if (textLower.match(/inglese|english|francese|spagnolo|lingua|vocabulary|role-play|language/)) emoji = '🌐';
+        else if (textLower.match(/arte|disegn|pittura|color|immagin|art|quadro|macchiaioli/)) emoji = '🎨';
+        else if (textLower.match(/musica|suon|ritmo|canzon|ascolt|music|poliritmia/)) emoji = '🎵';
+        else if (textLower.match(/tecnologia|cyber|digital|ai|informatica|database|sql|infografica|media/)) emoji = '💻';
+        else if (textLower.match(/motoria|fisica|sport|gioco|movimento|ostacoli/)) emoji = '⚽';
+        else if (textLower.match(/civica|costituzione|ambiente|sostenibil|regol|empatia|emotiv|diritti|privacy|bullismo/)) emoji = '🌱';
+        else if (textLower.match(/scrittura|italiano|giornal|poesia|libro|testo|fiaba|narrat|tragedia|commedia/)) emoji = '📝';
+        else if (textLower.match(/filosofia|debate|etica|saggio|pensiero/)) emoji = '🧠';
+
+        return `${emoji} ${titleText}`;
+      }
+      
+      if (ruolo) {
+        return `🎓 ${ruolo.trim()}`;
+      }
+
+      return "📌 Prompt Didattico Personalizzato";
+    }
+
+    function renderSavedPrompts() {
+      const grid = document.getElementById('saved-grid');
+      grid.innerHTML = '';
+
+      if (userSavedPrompts.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full bg-white p-8 rounded-xl border border-slate-200 text-center space-y-3 text-slate-500">
+            <i class="fa-regular fa-bookmark text-3xl text-slate-300"></i>
+            <p class="text-sm">Non hai ancora salvato nessun prompt personalizzato.</p>
+            <button onclick="switchTab('builder')" class="text-xs bg-indigo-600 text-white px-3 py-1.5 rounded-lg font-semibold hover:bg-indigo-700 transition">Crea il tuo primo Prompt</button>
+          </div>
+        `;
+        return;
+      }
+
+      userSavedPrompts.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = "bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4";
+        card.innerHTML = `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between gap-2">
+              <span class="px-2.5 py-1 bg-amber-50 text-amber-700 rounded-md font-semibold text-xs border border-amber-100 flex items-center gap-1">
+                <i class="fa-solid fa-bookmark text-amber-500"></i> Salvato il ${item.date}
+              </span>
+              <button onclick="deleteSavedPrompt(${index})" class="text-slate-400 hover:text-rose-600 transition text-xs">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </div>
+            <h3 class="font-bold text-slate-800 text-sm sm:text-base leading-snug">${item.title}</h3>
+            <div class="space-y-1.5 text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-200 font-sans">
+              <p><strong>R:</strong> ${item.ruolo || '-'}</p>
+              <p><strong>C:</strong> ${item.contesto || '-'}</p>
+              <p><strong>O:</strong> ${item.obiettivo || '-'}</p>
+              <p><strong>V:</strong> ${item.vincoli || '-'}</p>
+              <p><strong>O:</strong> ${item.output || '-'}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 pt-2 border-t border-slate-100">
+            <button onclick="loadCustomSavedPrompt(${index})" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-sliders"></i> Carica nel Creatore
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function deleteSavedPrompt(index) {
+      userSavedPrompts.splice(index, 1);
+      localStorage.setItem('user_saved_prompts', JSON.stringify(userSavedPrompts));
+      renderSavedPrompts();
+      showToast("Prompt rimosso!");
+    }
+
+    function loadCustomSavedPrompt(index) {
+      const item = userSavedPrompts[index];
+      if (!item) return;
+
+      document.getElementById('input-ruolo').value = item.ruolo || '';
+      document.getElementById('input-contesto').value = item.contesto || '';
+      document.getElementById('input-obiettivo').value = item.obiettivo || '';
+      document.getElementById('input-vincoli').value = item.vincoli || '';
+      document.getElementById('input-output').value = item.output || '';
+
+      switchTab('builder');
+      updatePrompt();
+      showToast("Prompt caricato!");
+    }
+
+    function exportSavedPromptsJSON() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(userSavedPrompts, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "i_miei_prompt_scuola.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    function importSavedPromptsJSON() {
+      document.getElementById('file-import-json').click();
+    }
+
+    function handleImportJSON(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const importedData = JSON.parse(e.target.result);
+
+          if (!Array.isArray(importedData)) {
+            showToast(i18n[currentLang].toastImportError);
+            return;
+          }
+
+          // Validate items
+          const validPrompts = importedData.filter(item => 
+            item && typeof item === 'object' &&
+            (item.ruolo || item.contesto || item.obiettivo || item.vincoli || item.output)
+          );
+
+          if (validPrompts.length === 0) {
+            showToast(i18n[currentLang].toastImportError);
+            return;
+          }
+
+          // Merge without duplicates based on ID
+          let addedCount = 0;
+          const existingIds = new Set(userSavedPrompts.map(p => p.id));
+
+          validPrompts.forEach(p => {
+            const promptId = p.id || ('custom-' + Date.now() + '-' + Math.random().toString(36).substr(2, 5));
+            if (!existingIds.has(promptId)) {
+              // Verifica ed eventuale conversione automatica di titoli generici in titoli specifici ed eleganti
+              let importedTitle = p.title || "";
+              const isGeneric = !importedTitle || 
+                                importedTitle.toLowerCase().includes("prompt personalizzato") || 
+                                importedTitle.toLowerCase().includes("progetta un") ||
+                                importedTitle.toLowerCase().includes("modello didattico") ||
+                                importedTitle.startsWith("📌 Prompt Importato");
+
+              if (isGeneric) {
+                importedTitle = formatCleanTitle(p.ruolo || '', p.obiettivo || '');
+              }
+
+              userSavedPrompts.unshift({
+                id: promptId,
+                title: importedTitle,
+                date: p.date || new Date().toLocaleDateString(),
+                ruolo: p.ruolo || '',
+                contesto: p.contesto || '',
+                obiettivo: p.obiettivo || '',
+                vincoli: p.vincoli || '',
+                output: p.output || ''
+              });
+              existingIds.add(promptId);
+              addedCount++;
+            }
+          });
+
+          localStorage.setItem('user_saved_prompts', JSON.stringify(userSavedPrompts));
+          renderSavedPrompts();
+          
+          if (typeof i18n[currentLang].toastImportSuccess === 'function') {
+            showToast(i18n[currentLang].toastImportSuccess(addedCount));
+          } else {
+            showToast(`Importati ${addedCount} prompt!`);
+          }
+
+        } catch (err) {
+          console.error("JSON Import Error:", err);
+          showToast(i18n[currentLang].toastImportError);
+        } finally {
+          // Reset file input value so the same file can be imported again if needed
+          event.target.value = '';
+        }
+      };
+
+      reader.readAsText(file);
+    }
+
+    function downloadPromptAsMarkdown() {
+      const text = document.getElementById('output-prompt').textContent;
+      if (!text || text.startsWith('[')) return;
+      const dataStr = "data:text/markdown;charset=utf-8," + encodeURIComponent("# Prompt Didattico R-C-O-V-O\n\n" + text);
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "prompt_scuola.md");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+
+    function applySubCatPreset(subCat) {
+      const p = presetLibrary.find(item => item.subCategory === subCat) || presetLibrary[0];
+      loadPresetIntoBuilder(p.id);
+    }
+
+    function updatePrompt() {
+      const r = document.getElementById('input-ruolo').value.trim();
+      const c = document.getElementById('input-contesto').value.trim();
+      const o1 = document.getElementById('input-obiettivo').value.trim();
+      const v = document.getElementById('input-vincoli').value.trim();
+      const o2 = document.getElementById('input-output').value.trim();
+
+      const t = i18n[currentLang];
+      let outputText = "";
+
+      if (!r && !c && !o1 && !v && !o2) {
+        outputText = currentLang === 'it' 
+          ? "[ Compila i campi a sinistra o seleziona un caso studio dalla Libreria per vedere l'anteprima del prompt qui... ]"
+          : "[ Fill in the fields on the left or select a case study from the Library to preview the generated prompt here... ]";
+      } else {
+        if (r) outputText += `${t.promptPrefixR}\n${r}\n\n`;
+        if (c) outputText += `${t.promptPrefixC}\n${c}\n\n`;
+        if (o1) outputText += `${t.promptPrefixO1}\n${o1}\n\n`;
+        if (v) outputText += `${t.promptPrefixV}\n${v}\n\n`;
+        if (o2) outputText += `${t.promptPrefixO2}\n${o2}`;
+      }
+
+      document.getElementById('output-prompt').textContent = outputText.trim();
+    }
+
+    function resetForm() {
+      document.getElementById('input-ruolo').value = '';
+      document.getElementById('input-contesto').value = '';
+      document.getElementById('input-obiettivo').value = '';
+      document.getElementById('input-vincoli').value = '';
+      document.getElementById('input-output').value = '';
+      updatePrompt();
+    }
+
+    function copyTextToClipboard(text) {
+      return new Promise((resolve, reject) => {
+        // Fallback using textarea execCommand to handle iFrame / permission policy restrictions safely
+        let textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.width = "2em";
+        textArea.style.height = "2em";
+        textArea.style.padding = "0";
+        textArea.style.border = "none";
+        textArea.style.outline = "none";
+        textArea.style.boxShadow = "none";
+        textArea.style.background = "transparent";
+        
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+          const successful = document.execCommand('copy');
+          document.body.removeChild(textArea);
+          if (successful) {
+            resolve();
+          } else {
+            reject(new Error('execCommand copy was unsuccessful'));
+          }
+        } catch (err) {
+          document.body.removeChild(textArea);
+          reject(err);
+        }
+      });
+    }
+
+    function copyGeneratedPrompt() {
+      const text = document.getElementById('output-prompt').textContent;
+      if (!text || text.startsWith('[')) return;
+      copyTextToClipboard(text).then(() => {
+        showToast(i18n[currentLang].toastCopied);
+      }).catch(err => {
+        console.error('Copy failed', err);
+      });
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toast-message').innerText = message;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    function setSubCatFilter(subCat, btnElement) {
+      activeSubCatFilter = subCat;
+      document.querySelectorAll('.subcat-filter-btn').forEach(btn => {
+        btn.classList.remove('subcat-btn-active');
+      });
+      if (btnElement) {
+        btnElement.classList.add('subcat-btn-active');
+      }
+      filterLibrary();
+    }
+
+    function renderSubcategoryFilters() {
+      const container = document.getElementById('subcat-filter-container');
+      container.innerHTML = '';
+
+      const subCats = ["Infanzia", "Primaria", "Secondaria di primo grado", "Secondaria di secondo grado"];
+      const t = i18n[currentLang];
+
+      const allPill = document.createElement('button');
+      allPill.className = `subcat-filter-btn px-2.5 py-1 rounded-md border text-xs font-medium transition ${activeSubCatFilter === 'all' ? 'subcat-btn-active' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'}`;
+      allPill.innerText = t.subcatAll;
+      allPill.onclick = (e) => setSubCatFilter('all', e.target);
+      container.appendChild(allPill);
+
+      subCats.forEach(sc => {
+        const btn = document.createElement('button');
+        const displaySub = (currentLang === 'en' && subCatTranslations.en[sc]) ? subCatTranslations.en[sc] : sc;
+        btn.className = `subcat-filter-btn px-2.5 py-1 rounded-md border text-xs font-medium transition ${activeSubCatFilter === sc ? 'subcat-btn-active' : 'bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100'}`;
+        btn.innerText = displaySub;
+        btn.onclick = (e) => setSubCatFilter(sc, e.target);
+        container.appendChild(btn);
+      });
+    }
+
+    function resetLibraryFilters() {
+      activeSubCatFilter = 'all';
+      document.getElementById('library-search').value = '';
+
+      renderSubcategoryFilters();
+      filterLibrary();
+    }
+
+    function loadPresetIntoBuilder(presetId) {
+      const p = presetLibrary.find(item => item.id === presetId);
+      if (!p) return;
+
+      document.getElementById('input-ruolo').value = p.ruolo[currentLang] || p.ruolo.it;
+      document.getElementById('input-contesto').value = p.contesto[currentLang] || p.contesto.it;
+      document.getElementById('input-obiettivo').value = p.obiettivo[currentLang] || p.obiettivo.it;
+      document.getElementById('input-vincoli').value = p.vincoli[currentLang] || p.vincoli.it;
+      document.getElementById('input-output').value = p.output[currentLang] || p.output.it;
+
+      switchTab('builder');
+      updatePrompt();
+      showToast(i18n[currentLang].toastLoaded);
+    }
+
+    function copyPresetDirect(presetId) {
+      const p = presetLibrary.find(item => item.id === presetId);
+      if (!p) return;
+
+      const t = i18n[currentLang];
+      const r = p.ruolo[currentLang] || p.ruolo.it;
+      const c = p.contesto[currentLang] || p.contesto.it;
+      const o1 = p.obiettivo[currentLang] || p.obiettivo.it;
+      const v = p.vincoli[currentLang] || p.vincoli.it;
+      const o2 = p.output[currentLang] || p.output.it;
+
+      const fullPrompt = `${t.promptPrefixR}\n${r}\n\n${t.promptPrefixC}\n${c}\n\n${t.promptPrefixO1}\n${o1}\n\n${t.promptPrefixV}\n${v}\n\n${t.promptPrefixO2}\n${o2}`;
+
+      copyTextToClipboard(fullPrompt).then(() => {
+        showToast(i18n[currentLang].toastCopied);
+      }).catch(err => {
+        console.error('Copy failed', err);
+      });
+    }
+
+    function filterLibrary() {
+      const query = document.getElementById('library-search').value.toLowerCase().trim();
+      const grid = document.getElementById('library-grid');
+      grid.innerHTML = '';
+
+      const filtered = presetLibrary.filter(item => {
+        if (activeSubCatFilter !== 'all' && item.subCategory !== activeSubCatFilter) return false;
+
+        if (query) {
+          const title = (item.title[currentLang] || item.title.it).toLowerCase();
+          const ruolo = (item.ruolo[currentLang] || item.ruolo.it).toLowerCase();
+          const contesto = (item.contesto[currentLang] || item.contesto.it).toLowerCase();
+          const obiettivo = (item.obiettivo[currentLang] || item.obiettivo.it).toLowerCase();
+          const vincoli = (item.vincoli[currentLang] || item.vincoli.it).toLowerCase();
+          const output = (item.output[currentLang] || item.output.it).toLowerCase();
+
+          return title.includes(query) || ruolo.includes(query) || contesto.includes(query) ||
+                 obiettivo.includes(query) || vincoli.includes(query) || output.includes(query);
+        }
+
+        return true;
+      });
+
+      const counterText = i18n[currentLang].resultsCount(filtered.length, presetLibrary.length);
+      document.getElementById('results-count').innerText = counterText;
+
+      const t = i18n[currentLang];
+      filtered.forEach(item => {
+        const card = document.createElement('div');
+        card.className = "bg-white p-5 rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between space-y-4";
+        
+        const displaySub = (currentLang === 'en' && subCatTranslations.en[item.subCategory]) ? subCatTranslations.en[item.subCategory] : item.subCategory;
+        const displayBadge = item.badge[currentLang] || item.badge.it;
+
+        card.innerHTML = `
+          <div class="space-y-3">
+            <div class="flex items-center justify-between gap-2">
+              <span class="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-md font-semibold text-xs border border-indigo-100 flex items-center gap-1">
+                <i class="fa-solid fa-graduation-cap text-indigo-500"></i> ${displayBadge}
+              </span>
+              <span class="text-[11px] font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded">
+                ${displaySub}
+              </span>
+            </div>
+
+            <h3 class="font-bold text-slate-800 text-sm sm:text-base leading-snug">
+              ${item.title[currentLang] || item.title.it}
+            </h3>
+
+            <div class="space-y-2 text-xs text-slate-600 bg-slate-50 p-3.5 rounded-lg border border-slate-200/80 font-sans">
+              <p><strong class="text-blue-700">${t.promptPrefixR}</strong> ${item.ruolo[currentLang] || item.ruolo.it}</p>
+              <p><strong class="text-emerald-700">${t.promptPrefixC}</strong> ${item.contesto[currentLang] || item.contesto.it}</p>
+              <p><strong class="text-amber-700">${t.promptPrefixO1}</strong> ${item.obiettivo[currentLang] || item.obiettivo.it}</p>
+              <p><strong class="text-rose-700">${t.promptPrefixV}</strong> ${item.vincoli[currentLang] || item.vincoli.it}</p>
+              <p><strong class="text-purple-700">${t.promptPrefixO2}</strong> ${item.output[currentLang] || item.output.it}</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 pt-2 border-t border-slate-100">
+            <button onclick="loadPresetIntoBuilder('${item.id}')" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-2 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5 shadow-sm">
+              <i class="fa-solid fa-sliders"></i> ${t.useTemplate}
+            </button>
+            <button onclick="copyPresetDirect('${item.id}')" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg text-xs font-semibold transition flex items-center justify-center gap-1.5" title="Copia Prompt">
+              <i class="fa-regular fa-copy"></i>
+            </button>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+    }
+
+    // Initialize Page
+    window.onload = function() {
+      const savedLang = localStorage.getItem('school_prompt_lang') || 'it';
+      setLanguage(savedLang);
+    };
+  </script>
+</body>
+</html>
